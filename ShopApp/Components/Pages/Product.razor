@@ -1,0 +1,42 @@
+﻿@page "/product"
+@rendermode InteractiveServer
+
+
+<style>
+    
+
+    .item-img-big {
+        width: 200px;
+    }
+</style>
+
+<body>
+    <br />
+    <br />
+    <br />
+
+    @if (item.Id != -1)
+    {
+        <h1>@item.Name</h1>
+        <p>Описание: @item.Description</p>
+        <p>Цена: @item.Price</p>
+        <img class="item-img-big" src="@item.ImgUrl" alt="image" />
+        
+    }
+</body>
+
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? id { get; set; }
+
+    Item item = new Item();
+
+    protected override void OnInitialized()
+    {
+        item = Catalog.GetItem(int.Parse(id));
+    }
+
+}

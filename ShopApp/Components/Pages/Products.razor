@@ -1,0 +1,67 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+@inject IToastService toastService
+@inject NavigationManager NavManager
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог</title>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link href="_content/Blazored.Toast/blazored-toast.css" rel="stylesheet" />
+</head>
+<body>
+    <br />
+    <br />
+    <br />
+    <h2>Товары, доступные в нашем магазине</h2>
+
+
+    @foreach (Item item in catalog.Items)
+    {
+        <ProductCard item="@item" />
+    }
+</body>
+</html>
+
+
+
+
+
+@code {
+    Catalog catalog = new Catalog();
+
+    protected void GoToProduct(int id)
+    {
+        NavManager.NavigateTo($"/product?id={id}", true);
+    }
+
+    protected override void OnInitialized()
+    {
+        
+        
+        catalog.Items = Catalog.GetItems();
+    }
+
+    private void AddToCart(int id)
+    {
+        var cart = Catalog.GetItemsFromCart();
+        var search = cart.FirstOrDefault(i => i.Id == id);
+        if (search != null)
+        {
+            toastService.ShowInfo("Товар уже в корзине");
+            return;
+        }
+        else
+        {
+            Item current = Catalog.GetItem(id);
+            Catalog.AddItemToCart(current.Id, current.Name, current.Description, current.Price, current.ImgUrl);
+            toastService.ShowInfo("Добавляем в корзину товар " + current.Name);
+        }
+    }
+
+}

@@ -1,0 +1,51 @@
+﻿@inject IToastService toastService
+@inject NavigationManager NavManager
+
+@if (item != null)
+{
+    <div class="item">
+        <a href="/product?id=@item.Id"><h3>@item.Name</h3></a>
+        <p>Описание: @item.Description</p>
+        <p>Цена: @item.Price</p>
+        <img class="item-img" src="@item.ImgUrl" />
+        <button class="btn btn-info" @onclick="(() => AddToCart(item.Id))">Купить</button>
+        <button class="btn btn-danger" @onclick="(() => DeleteProduct(item.Id))">Удалить из магазина</button>
+        <button class="btn btn-warning" @onclick="(() => EditProduct(item.Id))">Изменить</button>
+    </div>
+    <hr />
+}
+
+
+@code {
+
+    [Parameter]
+    public Item item { get; set; }
+
+    private void AddToCart(int id)
+    {
+        var cart = Catalog.GetItemsFromCart();
+        var search = cart.FirstOrDefault(i => i.Id == id);
+        if (search != null)
+        {
+            toastService.ShowInfo("Товар уже в корзине");
+            return;
+        }
+        else
+        {
+            Item current = Catalog.GetItem(id);
+            Catalog.AddItemToCart(current.Id, current.Name, current.Description, current.Price, current.ImgUrl);
+            toastService.ShowInfo("Добавляем в корзину товар " + current.Name);
+        }
+    }
+
+    private void DeleteProduct(int id)
+    {
+        Catalog.RemoveItem(id);
+        NavManager.NavigateTo("/products", true);
+    }
+
+    private void EditProduct(int id)
+    {
+        NavManager.NavigateTo($"/editproduct/{id}", true);
+    }
+}

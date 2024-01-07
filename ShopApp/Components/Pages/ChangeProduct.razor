@@ -1,0 +1,83 @@
+﻿@page "/editproduct/{productId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<br />
+<br />
+<br />
+
+<div class="form-group">
+    <label for="name">Название</label>
+    <input id="name" class="form-control" @bind="@name" />
+</div>
+
+<div class="form-group">
+    <label for="description">Описание</label>
+    <input id="description" class="form-control" @bind="@description" />
+</div>
+
+<div class="form-group">
+    <label for="pricestr">Цена</label>
+    <input id="pricestr" class="form-control" @bind="@pricestr" />
+</div>
+
+<div class="form-group">
+    <label for="img_url">Изображение</label>
+    <input id="price" class="form-control" @bind="@img_url" />
+</div>
+
+<button class="btn btn-primary" @onclick="CreateItem">Сохранить</button>
+
+@code {
+    [Parameter]
+    public int productId { get; set; }
+
+    Item item;
+
+    private string name;
+    private string description;
+    private string pricestr;
+    private string img_url;
+
+    protected override void OnInitialized()
+    {
+        var options = new DbContextOptionsBuilder<AppDBContext>()
+            .UseSqlite("Data Source=store.db").Options;
+        using (var dbContext = new AppDBContext(options))
+        {
+            item = dbContext.Items.FirstOrDefault(t => t.Id == productId);
+            name = item.Name;
+            description = item.Description;
+            pricestr = item.Price.ToString();
+            img_url = item.ImgUrl;
+        }
+    }
+
+    private void CreateItem()
+    {
+        try
+        {
+            var options = new DbContextOptionsBuilder<AppDBContext>()
+                    .UseSqlite("Data Source=tasks.db").Options;
+            using (var dbContext = new AppDBContext(options))
+            {
+                item.Name = name;
+                item.Description = description;
+                item.Price = double.Parse(pricestr);
+                item.ImgUrl = img_url;
+                dbContext.Items.Update(item);
+                dbContext.SaveChanges();
+                CartItem cartItem = new CartItem();
+                cartItem.Id = item.Id;
+                cartItem.Name = item.Name;
+                cartItem.Description = item.Description;
+                cartItem.Price = item.Price;
+                cartItem.ImgUrl = item.ImgUrl;
+                dbContext.Cart.Update(cartItem);
+                dbContext.SaveChanges();
+            }
+            NavigationManager.NavigateTo("products");
+        }
+        catch{}
+    }
+}

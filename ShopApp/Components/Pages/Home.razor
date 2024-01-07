@@ -1,0 +1,42 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager NavManager
+
+<PageTitle>Home</PageTitle>
+<br />
+<br />
+<br />
+<h1>Добро пожаловать в интернет-магазин одежды ClothesGoodShop</h1>
+
+<p>Текущее время: @currentDateTime</p>
+
+
+
+@code
+{
+    private string currentDateTime = DateTime.Now.ToString("G");
+
+    private Timer? secondsTimer;
+
+    protected override void OnInitialized()
+    {
+        //one second interval
+        secondsTimer = new Timer(Tick, null, 0, 1000);
+
+
+
+    }
+
+    private void Tick(object _)
+    {
+        currentDateTime = DateTime.Now.ToString("G");
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    public void Dispose()
+    {
+        secondsTimer?.Dispose();
+    }
+
+}

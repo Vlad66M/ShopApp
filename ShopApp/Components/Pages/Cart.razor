@@ -1,0 +1,42 @@
+﻿@page "/cart"
+@rendermode InteractiveServer
+
+<br />
+<br />
+<br />
+
+@if(cart.Count == 0)
+{
+    <h3>Корзина пуста</h3>
+}
+
+@if (cart.Count > 0)
+{
+    @foreach (Item item in cart)
+    {
+        <div class="item">
+            <a href="/product?id=@item.Id"><h3>@item.Name</h3></a>
+
+            <p>Описание: @item.Description</p>
+            <p>Цена: @item.Price</p>
+            <img class="item-img" src="@item.ImgUrl" />
+            <button class="btn btn-danger" @onclick="(() => DeleteFromCart(item.Id))">Удалить из корзины</button>
+        </div>
+        <hr />
+    }
+}
+
+@code {
+    private List<Item> cart = new List<Item>();
+
+    protected override void OnInitialized()
+    {
+        cart = Catalog.GetItemsFromCart();
+    }
+
+    private void DeleteFromCart(int id)
+    {
+        Catalog.RemoveItemFromCart(id);
+        cart = Catalog.GetItemsFromCart();
+    }
+}

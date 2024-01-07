@@ -1,0 +1,127 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+
+<BlazoredToasts />
+<head>
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link href="_content/Blazored.Toast/blazored-toast.css" rel="stylesheet" />
+</head>
+
+@* <div style="display: flex; flex-direction: row">
+    <div style="margin: 6px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: 20px; position: absolute; top: 10px; right: 30px; color: cadetblue">До конца акции осталось: @remains</div>
+    <div style="margin: 6px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: 20px; position: absolute; top: 10px; right: 30px; color: cadetblue">
+        <button class="btn btn-info">Корзина</button>
+    </div>
+</div>
+ *@
+
+<div class="layout-container" style="display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    justify-content: space-between;">
+
+    <div class="layout-cart" style="margin: 6px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: cadetblue;">
+        <button class="btn btn-info" @onclick="GoToCatalog">Перейти в каталог</button>
+    </div>
+
+    <div class="layout-cart" style="margin: 6px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: cadetblue;">
+        <button class="btn btn-info" @onclick="GoToAddItem">Добавить товар</button>
+    </div>
+
+    <div class="layout-remains" style="margin: 6px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: cadetblue;">
+        До конца акции осталось: @remains
+    </div>
+
+    <div class="layout-cart" style="margin: 6px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: cadetblue;">
+        <button class="btn btn-info" @onclick="GoToCart">Корзина @cartCountDisplay</button>
+    </div>
+</div>
+
+
+@Body
+
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code
+{
+    string cartCountDisplay = "";
+    static DateTime date1 = new DateTime(2023, 12, 31, 12, 0, 0);
+    static DateTime date2 = DateTime.Now;
+    static TimeSpan interval = date1 - date2;
+    private static string remains = interval.Days + "дней, " + interval.Hours + ":" + interval.Minutes + ":" + interval.Seconds;
+
+    private Timer? secondsTimer;
+
+    protected override void OnInitialized()
+    {
+        secondsTimer = new Timer(Tick, null, 0, 1000);
+    }
+
+    private string GetCartCountDisplay()
+    {
+        int cartCount = Catalog.GetItemsFromCart().Count();
+        if (cartCount == 0)
+        {
+            return "";
+        }
+        else return "(" + cartCount + ")";
+    }
+
+    private void Tick(object _)
+    {
+        cartCountDisplay = GetCartCountDisplay();
+        date1 = new DateTime(2024, 12, 31, 12, 0, 0);
+        DateTime date2 = DateTime.Now;
+        TimeSpan interval = date1 - date2;
+        remains = interval.Days + " дней, " + interval.Hours + " часов, " + interval.Minutes + " минут, " + interval.Seconds + " секунд";
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    public void Dispose()
+    {
+        secondsTimer?.Dispose();
+    }
+
+    private void GoToCart()
+    {
+        NavManager.NavigateTo("/cart", true);
+    }
+
+    private void GoToCatalog()
+    {
+        NavManager.NavigateTo("/products", true);
+    }
+
+    private void GoToAddItem()
+    {
+        NavManager.NavigateTo("/addproduct", true);
+    }
+
+}
