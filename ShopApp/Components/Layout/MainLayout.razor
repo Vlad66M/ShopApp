@@ -45,7 +45,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
     color: cadetblue;">
-        До конца акции осталось: @remains
+        До завершения акции осталось: @remains
     </div>
 
     <div class="layout-cart" style="margin: 6px;
@@ -54,6 +54,14 @@
     font-size: 20px;
     color: cadetblue;">
         <button class="btn btn-info" @onclick="GoToCart">Корзина @cartCountDisplay</button>
+    </div>
+
+    <div class="layout-cart" style="margin: 6px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: cadetblue;">
+        <button class="btn btn-info" @onclick="GoToOrders">Заказы</button>
     </div>
 </div>
 
@@ -124,4 +132,8 @@
         NavManager.NavigateTo("/addproduct", true);
     }
 
+    private void GoToOrders()
+    {
+        NavManager.NavigateTo("/orders", true);
+    }
 }

@@ -1,0 +1,23 @@
+﻿@page "/orders"
+@rendermode InteractiveServer
+
+<br />
+<br />
+<br />
+<h2>Оформленные заказы</h2>
+
+
+@foreach (Order order in Catalog.GetOrders())
+{
+    <h3>Дата заказа: @order.Date</h3>
+    <a href="/product?id=@Catalog.GetItem(order.ItemId).Id"><h3>@Catalog.GetItem(order.ItemId).Name</h3></a>
+    <p>Описание: @Catalog.GetItem(order.ItemId).Description</p>
+    <p>Цена: @Catalog.GetItem(order.ItemId).Price</p>
+    <img class="item-img" src="@Catalog.GetItem(order.ItemId).ImgUrl" />
+    <hr />
+}
+@code {
+
+    Catalog catalog = new Catalog();
+
+}

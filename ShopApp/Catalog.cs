@@ -51,6 +51,32 @@ namespace ShopApp
             return items;
         }
 
+        public static Item GetItem(int id)
+        {
+            Item item = new Item();
+            var options = new DbContextOptionsBuilder<AppDBContext>()
+            .UseSqlite("Data Source=store.db").Options;
+            using (var dbContext = new AppDBContext(options))
+            {
+                item = dbContext.Items.FirstOrDefault(item => item.Id == id);
+            }
+
+            return item;
+        }
+
+        public static List<Order> GetOrders()
+        {
+            List<Order> orders = new List<Order>();
+            var options = new DbContextOptionsBuilder<AppDBContext>()
+            .UseSqlite("Data Source=store.db").Options;
+            using (var dbContext = new AppDBContext(options))
+            {
+                orders = dbContext.Orders.ToList();
+            }
+
+            return orders;
+        }
+
         public static void DeleteAllItems()
         {
             var options = new DbContextOptionsBuilder<AppDBContext>()
@@ -131,7 +157,7 @@ namespace ShopApp
                 }
             }
         }
-        public static Item GetItem(int id)
+        /*public static Item GetItem(int id)
         {
             Item item = new Item();
             item.Id = -1;
@@ -143,7 +169,7 @@ namespace ShopApp
             }
 
             return item;
-        }
+        }*/
 
         public static void AddItem(string name, string description, double price, string img_url)
         {

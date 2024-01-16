@@ -1,5 +1,6 @@
 ﻿@page "/cart"
 @rendermode InteractiveServer
+@inject IToastService toastService
 
 <br />
 <br />
@@ -24,6 +25,9 @@
         </div>
         <hr />
     }
+
+    <br />
+    <button class="btn btn-primary" @onclick="Buy">Оформить заказ</button>
 }
 
 @code {
@@ -37,6 +41,27 @@
     private void DeleteFromCart(int id)
     {
         Catalog.RemoveItemFromCart(id);
+        cart = Catalog.GetItemsFromCart();
+    }
+
+    private void Buy()
+    {
+        var options = new DbContextOptionsBuilder<AppDBContext>()
+            .UseSqlite("Data Source=store.db").Options;
+        using (var dbContext = new AppDBContext(options))
+        {
+            foreach (Item itm in cart)
+            {
+                var order = new Order();
+                order.ItemId = itm.Id;
+                order.CustomerId = -1;
+                order.Date = DateTime.Now.ToString("G");
+                dbContext.Orders.Add(order);
+                dbContext.SaveChanges();
+                Catalog.RemoveItemFromCart(itm.Id);
+            }
+        }
+        toastService.ShowInfo("Заказ оформлен");
         cart = Catalog.GetItemsFromCart();
     }
 }

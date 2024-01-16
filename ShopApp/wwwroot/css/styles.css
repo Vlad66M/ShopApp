@@ -1,10 +1,10 @@
 ﻿
 .item-img {
-    width: 50px;
+    width: 5px;
 }
 
 .item-img-big {
-    width: 50px;
+    width: 5px;
 }
 
 .layout-container {
@@ -31,4 +31,8 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
     color: cadetblue;
+}
+
+.input-element{
+    width: 200px;
 }

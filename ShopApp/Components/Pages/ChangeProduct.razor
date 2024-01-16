@@ -2,28 +2,36 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
+<style>
+
+
+    .input-element {
+        width: 300px;
+    }
+</style>
+
 <br />
 <br />
 <br />
 
 <div class="form-group">
     <label for="name">Название</label>
-    <input id="name" class="form-control" @bind="@name" />
+    <input id="name" class="form-control input-element" @bind="@name" />
 </div>
 
 <div class="form-group">
     <label for="description">Описание</label>
-    <input id="description" class="form-control" @bind="@description" />
+    <input id="description" class="form-control input-element" @bind="@description" />
 </div>
 
 <div class="form-group">
     <label for="pricestr">Цена</label>
-    <input id="pricestr" class="form-control" @bind="@pricestr" />
+    <input id="pricestr" class="form-control input-element" @bind="@pricestr" />
 </div>
 
 <div class="form-group">
     <label for="img_url">Изображение</label>
-    <input id="price" class="form-control" @bind="@img_url" />
+    <input id="price" class="form-control input-element" @bind="@img_url" />
 </div>
 
 <button class="btn btn-primary" @onclick="CreateItem">Сохранить</button>
